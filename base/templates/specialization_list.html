@@ -1,0 +1,15 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+  <div class="d-flex justify-content-evenly align-items-center">
+    <h1 class="p-3" style="font-family: 'Open Sans', cursive;">Специализации</h1>
+    <a class="" href="{% url 'create-specialization' %}">Добавить специализацию</a>
+  </div>
+  <div class="list-group col-sm-5">
+    {% for specialization in specialization_list %}
+      <div class="list-group-item list-group-item-action d-flex justify-content-between">
+        <div>{{ specialization }}</div>
+        <div style="margin-right: 1em;"><a href="{% url 'update-specialization' pk=specialization.id %}">Изменить</a></div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

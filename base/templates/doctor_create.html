@@ -1,0 +1,23 @@
+{% extends 'base_generic.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1 class="p-3" style="font-family: 'Open Sans', cursive;">Зарегистрировать врача</h1>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      {{ field|as_crispy_field }}
+      {% for error in field.errors %}
+        {{ error|as_crispy_errors }}
+      {% endfor %}
+    {% endfor %}
+    <div class="input-group">
+      <div class="input-group-btn mr-3">
+        <button class="btn btn-primary ">
+          <a class="text-white" href="{% url 'doctors' %}">Назад</a>
+        </button>
+      </div>
+      <input class="btn btn-primary" type="submit" value="Зарегистрировать" style="margin-bottom: 1em;">
+    </div>
+  </form>
+{% endblock %}

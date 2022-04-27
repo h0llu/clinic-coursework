@@ -1,0 +1,15 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+  <div class="d-flex justify-content-evenly align-items-center">
+    <h1 class="p-3" style="font-family: 'Open Sans', cursive;">Сотрудники</h1>
+    <a class="" href="{% url 'create-employee' %}">Зарегистрировать сотрудника</a>
+  </div>
+  <div class="list-group col-sm-7">
+    {% for employee in employee_list %}
+      <div class="list-group-item list-group-item-action d-flex justify-content-between">
+        <div>{{ employee }}</div>
+        <div style="margin-right: 1em;"><a href="{% url 'update-employee' pk=employee.id %}">Изменить данные</a></div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'base_generic.html' %}
+{% block styles %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
+{% block content %}
+  <div class="list-group list-group-flush">
+    <h1 class="p-3" style="font-family: 'Open Sans', cursive; padding-bottom: 0 !important;">{{ doctor.employee.full_name }}</h1>
+    <h3 class="list-group-item border-0">Информация о специалисте</h3>
+  </div>
+  <div class="list-group list-group-flush">
+    <p class="col-sm-7 list-group-item"><strong>Специализация:</strong> {{ doctor.specialization }}</p>
+    <p class="col-sm-7 list-group-item">
+      <strong>Список предоставляемых услуг: </strong>
+      {% if doctor.service_set.all %}
+        {% for service in doctor.service_set.all %}{{ service }}{% if not forloop.last %}, {% endif %}{% endfor %}
+      {% else %}
+        не указано
+      {% endif %}
+    </p>
+  </div>
+
+{#  <div class="" style="margin-left: 20px; margin-top: 20px;">#}
+{#    <h3>Время работы</h3>#}
+{#    {% if not doctor.employee.schedule_set.all %}#}
+{#      <p class="p-2">Время работы не указано</p>#}
+{#    {% endif %}#}
+{#    <div class="list-group p-2">#}
+{#      {% for schedule in doctor.employee.schedule_set.all %}#}
+{#        {% if schedule.weekday == 'пн' %}#}
+{#          <div>Понедельник:#}
+{#            {{ schedule.work_start_time | time:"H:i" }}-{{ schedule.work_end_time | time:"H:i" }}#}
+{#          </div>#}
+{#        {% endif %}#}
+{#      {% endfor %}#}
+{#      {% for schedule in doctor.employee.schedule_set.all %}#}
+{#        {% if schedule.weekday == 'вт' %}#}
+{#          <div>Вторник:#}
+{#            {{ schedule.work_start_time | time:"H:i" }}-{{ schedule.work_end_time | time:"H:i" }}#}
+{#          </div>#}
+{#        {% endif %}#}
+{#      {% endfor %}#}
+{#      {% for schedule in doctor.employee.schedule_set.all %}#}
+{#        {% if schedule.weekday == 'ср' %}#}
+{#          <div>Среда:#}
+{#            {{ schedule.work_start_time | time:"H:i" }}-{{ schedule.work_end_time | time:"H:i" }}#}
+{#          </div>#}
+{#        {% endif %}#}
+{#      {% endfor %}#}
+{#      {% for schedule in doctor.employee.schedule_set.all %}#}
+{#        {% if schedule.weekday == 'чт' %}#}
+{#          <div>Четверг:#}
+{#            {{ schedule.work_start_time | time:"H:i" }}-{{ schedule.work_end_time | time:"H:i" }}#}
+{#          </div>#}
+{#        {% endif %}#}
+{#      {% endfor %}#}
+{#      {% for schedule in doctor.employee.schedule_set.all %}#}
+{#        {% if schedule.weekday == 'пт' %}#}
+{#          <div>Пятница:#}
+{#            {{ schedule.work_start_time | time:"H:i" }}-{{ schedule.work_end_time | time:"H:i" }}#}
+{#          </div>#}
+{#        {% endif %}#}
+{#      {% endfor %}#}
+{#      {% for schedule in doctor.employee.schedule_set.all %}#}
+{#        {% if schedule.weekday == 'сб' %}#}
+{#          <div>Суббота:#}
+{#            {{ schedule.work_start_time | time:"H:i" }}-{{ schedule.work_end_time | time:"H:i" }}#}
+{#          </div>#}
+{#        {% endif %}#}
+{#      {% endfor %}#}
+{#      {% for schedule in doctor.employee.schedule_set.all %}#}
+{#        {% if schedule.weekday == 'вс' %}#}
+{#          <div>Воскресенье:#}
+{#            {{ schedule.work_start_time | time:"H:i" }}-{{ schedule.work_end_time | time:"H:i" }}#}
+{#          </div>#}
+{#        {% endif %}#}
+{#      {% endfor %}#}
+{#    </div>#}
+{#  </div>#}
+  {% for group in request.user.groups.all %}
+    {% if group.name == 'Администратор' %}
+      <div style="margin-top: 3em;">
+        <button class="btn btn-primary"><a class="text-white" href="{% url 'update-doctor' pk=doctor.id %}">Изменить данные</a></button>
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endblock %}

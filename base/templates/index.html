@@ -1,0 +1,65 @@
+{% extends "base_generic.html" %}
+{% block styles %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
+{% block content %}
+  <div class="one"><h1>Клиника "Жили-были"</h1></div>
+  <p class="subtitle" style="margin-left: 2em;">Добро пожаловать на сайт медицинской клиники <em>Жили-были</em></p>
+  <h2 class="p-3">О нас</h2>
+  <ul class="list-group list-group-flush" style="width: 25rem;">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      Доктора <span class="badge badge-primary badge-pill">{{ num_doctors }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      Медицинские услуги <span class="badge badge-primary badge-pill">{{ num_services }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      Зарегистрированные пациенты <span class="badge badge-primary badge-pill">{{ num_patients }}</span>
+    </li>
+  </ul>
+
+  <div class="d-flex justify-content-evenly align-items-center">
+    <h2 class="p-3">Популярные услуги</h2>
+    <a class="" href="{% url 'services' %}">Смотреть все</a>
+  </div>
+  <div class="card-deck" style="width: 75rem;">
+    {% for service in service_list %}
+      <div class="card bg-light" style="width: 18rem;">
+        <p class="card-header">{{ service.name }}</p>
+        <div class="card-body">
+          <p class="card-text text-truncate"><strong>Описание:</strong> {{ service.description }}</p>
+          <p class="text-muted"><strong>Стоимость:</strong> {{ service.cost }} руб.</p>
+        </div>
+          <div class="card-footer d-flex justify-content-center">
+            <a class="btn btn-primary" href="{% url 'service-detail' pk=service.id %}">Подробнее</a>
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="d-flex justify-content-evenly align-items-center">
+    <h2 class="p-3">Наши лучшие врачи</h2>
+    <a class="" href="{% url 'doctors' %}">Смотреть все</a>
+  </div>
+  <div class="card-deck" style="width: 75rem; margin-bottom: 1em;">
+    {% for doctor in doctor_list %}
+      <div class="card bg-light" style="width: 18rem;">
+        <p class="card-header">{{ doctor.employee.full_name }}</p>
+        <div class="card-body">
+          <p class="card-text"><strong>Специальность: </strong>{{ doctor.specialization }}</p>
+          {% if doctor.service_set.all %}
+            <p class="card-text"><strong>Предоставляемые услуги: </strong>
+              {% for service in doctor.service_set.all %}
+                {{ service }}{% if not forloop.last %} ,{% endif %}
+              {% endfor %}
+            </p>
+          {% endif %}
+        </div>
+          <div class="card-footer d-flex justify-content-center">
+            <a class="btn btn-primary" href="{% url 'doctor-detail' pk=doctor.id %}">Подробнее</a>
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  {% block title %}<title>Медклиника "Жили-были"</title>{% endblock %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  {% block styles %}
+  {% endblock %}
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2">
+      {% block sidebar %}
+        <ul class="list-group list-group-flush menu">
+          <li class="list-group-item">Запись: 8(800)555-35-35</li>
+          <li class="list-group-item list-group-item-action"><a class="side" href="{% url 'index' %}">Домашняя страница</a></li>
+          <li class="list-group-item list-group-item-action"><a class="side" href="{% url 'services' %}">Медицинские услуги</a></li>
+          <li class="list-group-item list-group-item-action"><a class="side" href="{% url 'doctors' %}">Наши врачи</a></li>
+        </ul>
+        <ul class="list-group list-group-flush" style="margin-top: 1.3em;">
+          {% if user.is_authenticated %}
+            <li class="list-group-item">Добро пожаловать, {{ user.get_username }}</li>
+            <li class="list-group-item">Ваша роль -
+              {% for group in request.user.groups.all %}{{ group }}{% endfor %}
+            </li>
+            {% for group in request.user.groups.all %}
+              {% if group.name == 'Пациент' %}
+                <li class="list-group-item"><a class="side" href="{% url 'personal' %}">Личная карта</a></li>
+{#                <li class="list-group-item"><a class="side" href="">Запись на прием</a></li>#}
+              {% elif group.name == 'Администратор' %}
+                <li class="list-group-item list-group-item-action"><a href="{% url 'users' %}">Пользователи</a></li>
+                <li class="list-group-item list-group-item-action"><a href="{% url 'employees' %}">Сотрудники</a></li>
+                <li class="list-group-item list-group-item-action"><a href="{% url 'doctors' %}">Врачи</a></li>
+                <li class="list-group-item list-group-item-action"><a href="{% url 'patients' %}">Пациенты</a></li>
+                <li class="list-group-item list-group-item-action"><a href="{% url 'services' %}">Медуслуги</a></li>
+                <li class="list-group-item list-group-item-action"><a href="{% url 'positions' %}">Должности</a></li>
+                <li class="list-group-item list-group-item-action"><a href="{% url 'specializations' %}">Врачебные специальности</a></li>
+              {% elif group.name == 'Врач' %}
+                <li class="list-group-item list-group-item-action"><a href="{% url 'patients' %}">Пациенты</a></li>
+              {% endif %}
+            {% endfor %}
+            <li class="list-group-item"><a href="{% url 'logout' %}?next={{ request.path }}">Выйти</a></li>
+          {% else %}
+            <li class="list-group-item"><a href="{% url 'login' %}">Войти</a></li>
+            <li class="list-group-item"><a href="{% url 'patient-signup' %}?next=/">Регистрация</a></li>
+          {% endif %}
+        </ul>
+      {% endblock %}
+  </div>
+    <div class="col-sm-10">
+      {% block content %}{% endblock %}
+
+      {% block pagination %}
+        {% if is_paginated %}
+          <div class="pagination">
+            <span class="page-links">
+              {% if page_obj.has_previous %}
+                <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+              {% endif %}
+              <span class="page-current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+              </span>
+              {% if page_obj.has_next %}
+                <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+              {% endif %}
+            </span>
+          </div>
+        {% endif %}
+      {% endblock %}
+    </div>
+  </div>
+</div>
+</body>
+</html>

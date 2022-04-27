@@ -1,0 +1,26 @@
+{% extends 'base_generic.html' %}
+{% block styles %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
+{% block content %}
+  <div class="list-group list-group-flush">
+    <h1 class="p-3" style="font-family: 'Open Sans', cursive; padding-bottom: 0 !important;">{{ service.name }}</h1>
+    <p class="list-group-item border-0" style="margin-bottom: 1.5em;"><strong>Стоимость:</strong> {{ service.cost}} руб.</p>
+  </div>
+  <div class="list-group list-group-flush">
+  <p class="col-sm-7 list-group-item border-top-0"><strong>Описание:</strong> {{ service.description }}</p>
+    <p class="list-group-item border-bottom-0"><strong>Кабинеты: </strong>{% for office in service.office.all %}{{ office }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+  </div>
+
+{#  <div class="" style="margin-left: 20px; margin-top: 20px;">#}
+{#    <h2>Время для записи</h2>#}
+{#  </div>#}
+  {% for group in request.user.groups.all %}
+    {% if group.name == 'Администратор' %}
+      <div>
+        <button class="btn btn-primary"><a class="text-white" href="{% url 'update-service' pk=service.id %}">Изменить данные</a></button>
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endblock %}

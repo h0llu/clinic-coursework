@@ -1,0 +1,46 @@
+{% extends 'base_generic.html' %}
+{% block styles %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
+{% block content %}
+  <div class="list-group list-group-flush">
+    <h1 class="p-3" style="font-family: 'Open Sans', cursive; padding-bottom: 0 !important;">{{ medicaltest.service.name }}</h1>
+    <p class="list-group-item border-0"><strong>Стоимость:</strong> {{ medicaltest.service.cost }} руб.</p>
+    <p class="list-group-item border-0">
+      <strong>Дата и время:</strong> {{ medicaltest.date|date:'d-m-Y H:i' }}
+    </p>
+    <p class="list-group-item border-0"><strong>Номер кабинета:</strong> {{ medicaltest.office }}</p>
+    <p class="list-group-item border-0" style="margin-bottom: 1.5em;">
+      <strong>Врач:</strong> {{ medicaltest.doctor.specialization }} {{ medicaltest.doctor.employee.full_name }}
+    </p>
+  </div>
+
+  {% if medicaltest.date <= datetime %}
+    <div class="list-group list-group-flush">
+    <p class="list-group-item"><strong>Результаты анализов: </strong>
+      {% if medicaltest.result %}{{ medicaltest.result }}{% else %}Отсутствуют{% endif %}
+    </div>
+  {% endif %}
+
+  <div class="input-group p-4">
+    <div class="input-group-btn mr-3">
+      <button class="btn btn-primary">
+        {% for group in request.user.groups.all %}
+          {% if group.name == 'Администратор' or group.name == 'Врач' %}
+            <a class="text-white" href="{% url 'patient-personal' pk=medicaltest.patient.id %}">Назад</a>
+          {% elif group.name == 'Пациент' %}
+            <a class="text-white" href="{% url 'personal' %}">Назад</a>
+          {% endif %}
+        {% endfor %}
+      </button>
+    </div>
+  {% for group in request.user.groups.all %}
+    {% if group.name == 'Администратор' or group.name == 'Врач' %}
+      <div>
+        <button class="btn btn-primary"><a class="text-white" href="{% url 'update-medicaltest' pk=medicaltest.id %}">Изменить данные</a></button>
+      </div>
+    {% endif %}
+  {% endfor %}
+  </div>
+{% endblock %}

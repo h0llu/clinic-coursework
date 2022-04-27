@@ -1,0 +1,39 @@
+{% extends 'base_generic.html' %}
+{% block styles %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-evenly align-items-center">
+    <h1 class="p-3" style="font-family: 'Open Sans', cursive;">Врачи</h1>
+    {% for group in request.user.groups.all %}
+      {% if group.name == 'Администратор' %}
+        <a class="" href="{% url 'create-doctor' %}">Зарегистрировать врача</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if doctor_list %}
+  <div class="card-deck">
+    {% for doctor in doctor_list %}
+      <div class="card bg-light" style="width: 18rem;">
+        <p class="card-header">{{ doctor.employee.full_name }}</p>
+        <div class="card-body">
+          <p class="card-text"><strong>Специальность:</strong> {{ doctor.specialization }}</p>
+          {% if doctor.service_set.all %}
+            <p class="card-text"><strong>Предоставляемые услуги: </strong>
+              {% for service in doctor.service_set.all %}
+                {{ service }}{% if not forloop.last %} ,{% endif %}
+              {% endfor %}
+            </p>
+          {% endif %}
+        </div>
+          <div class="card-footer d-flex justify-content-center">
+            <a class="btn btn-primary" href="{% url 'doctor-detail' pk=doctor.id %}">Подробнее</a>
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p>Врачей на данный момент нет</p>
+  {% endif %}
+{% endblock %}

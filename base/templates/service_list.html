@@ -1,0 +1,33 @@
+{% extends 'base_generic.html' %}
+{% block styles %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-evenly align-items-center">
+    <h1 class="p-3" style="font-family: 'Open Sans', cursive;">Медицинские услуги</h1>
+    {% for group in request.user.groups.all %}
+      {% if group.name == 'Администратор' %}
+        <a class="" href="{% url 'create-service' %}">Добавить услугу</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if service_list %}
+  <div class="card-deck">
+    {% for service in service_list %}
+        <div class="card bg-light" style="width: 18rem;">
+          <p class="card-header">{{ service.name }}</p>
+          <div class="card-body">
+            <p class="card-text text-truncate"><strong>Описание:</strong> {{ service.description }}</p>
+            <p class="text-muted"><strong>Стоимость:</strong> {{ service.cost }} руб.</p>
+          </div>
+          <div class="card-footer d-flex justify-content-center">
+            <a class="btn btn-primary" href="{% url 'service-detail' pk=service.id %}">Подробнее</a>
+          </div>
+        </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p>Услуг на данный момент нет</p>
+  {% endif %}
+{% endblock %}

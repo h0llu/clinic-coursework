@@ -1,0 +1,22 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+  <div class="d-flex justify-content-evenly align-items-center">
+    <h1 class="p-3" style="font-family: 'Open Sans', cursive;">Пациенты</h1>
+    <a class="" href="{% url 'create-patient' %}">Зарегистрировать пациента</a>
+  </div>
+  <div class="list-group col-sm-5">
+    {% for patient in patient_list %}
+      <div class="list-group-item list-group-item-action d-flex justify-content-between">
+        <div>{{ patient }}</div>
+        <div>
+          <div style="margin-right: 1em;"><a href="{% url 'patient-personal' pk=patient.id %}">Личная карта</a></div>
+          {% for group in request.user.groups.all %}
+            {% if group.name == 'Администратор' %}
+              <div style="margin-right: 1em;"><a href="{% url 'update-patient' pk=patient.id %}">Изменить данные</a></div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

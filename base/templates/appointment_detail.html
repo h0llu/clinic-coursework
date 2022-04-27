@@ -1,0 +1,59 @@
+{% extends 'base_generic.html' %}
+{% block styles %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
+{% block content %}
+  <div class="list-group list-group-flush">
+    <h1 class="p-3" style="font-family: 'Open Sans', cursive; padding-bottom: 0 !important;">{{ appointment.service.name }}</h1>
+    <p class="list-group-item border-0"><strong>Стоимость:</strong> {{ appointment.service.cost }} руб.</p>
+    <p class="list-group-item border-0">
+      <strong>Дата и время:</strong> {{ appointment.date|date:'d-m-Y H:i' }}
+    </p>
+    <p class="list-group-item border-0"><strong>Номер кабинета:</strong> {{ appointment.office }}</p>
+    <p class="list-group-item border-0" style="margin-bottom: 1.5em;">
+      <strong>Врач:</strong> {{ appointment.doctor.specialization }} {{ appointment.doctor.employee.full_name }}
+    </p>
+  </div>
+
+  {% if appointment.date <= datetime %}
+    <div class="list-group list-group-flush">
+    <p class="col-sm-7 list-group-item border-top-0"><strong>Жалобы: </strong>
+      {% if appointment.patient_complaints %}{{ appointment.patient_complaints }}{% else %}Отсутствуют{% endif %}
+    </p>
+    <p class="list-group-item border-bottom-0"><strong>Анамнез: </strong>
+      {% if appointment.anamnesis %}{{ appointment.anamnesis }}{% else %}Отсутствует{% endif %}
+    </p>
+    <p class="list-group-item border-bottom-0"><strong>Результат приема: </strong>
+      {% if appointment.examination_result %}{{ appointment.examination_result }}{% else %}Отсутствуют{% endif %}
+    </p>
+    <p class="list-group-item border-bottom-0"><strong>Диагноз: </strong>
+      {% if appointment.diagnosis %}{{ appointment.diagnosis }}{% else %}Отсутствует{% endif %}
+    </p>
+    <p class="list-group-item border-bottom-0"><strong>Рекомендации: </strong>
+      {% if appointment.recommendations %}{{ appointment.recommendations }}{% else %}Отсутствуют{% endif %}
+    </p>
+    </div>
+  {% endif %}
+
+  <div class="input-group p-4">
+    <div class="input-group-btn mr-3">
+      <button class="btn btn-primary">
+        {% for group in request.user.groups.all %}
+          {% if group.name == 'Администратор' or group.name == 'Врач' %}
+            <a class="text-white" href="{% url 'patient-personal' pk=appointment.patient.id %}">Назад</a>
+          {% elif group.name == 'Пациент' %}
+            <a class="text-white" href="{% url 'personal' %}">Назад</a>
+          {% endif %}
+        {% endfor %}
+      </button>
+    </div>
+  {% for group in request.user.groups.all %}
+    {% if group.name == 'Администратор' or group.name == 'Врач' %}
+      <div>
+        <button class="btn btn-primary"><a class="text-white" href="{% url 'update-appointment' pk=appointment.id %}">Изменить данные</a></button>
+      </div>
+    {% endif %}
+  {% endfor %}
+  </div>
+{% endblock %}
